@@ -107,9 +107,11 @@ log4j = {
         console name:'stdout', layout:pattern(conversionPattern: '[%d] %-7p [%-30.20c]  %m%n')
     }
 
-	info   'grails.app'
+    info   'grails.app'
 
     info   'grails.plugins.primefaces'
+    
+    info   'com.company.demo'
 
 
     error  'org.codehaus.groovy.grails.web.servlet',        // controllers

@@ -1,17 +1,29 @@
 package com.company.demo.beans
 
+import javax.annotation.PostConstruct;
+import org.apache.log4j.Logger
+import org.primefaces.model.LazyDataModel
+import org.primefaces.model.SortOrder
 import com.company.demo.*
 import grails.plugins.primefaces.GrailsService
 import grails.plugins.primefaces.MessageSourceBean
 import javax.faces.application.FacesMessage
 import javax.faces.bean.ManagedBean
 import javax.faces.bean.ManagedProperty
+import javax.faces.bean.ViewScoped
 import javax.faces.context.FacesContext
 import org.springframework.validation.FieldError
 
 @ManagedBean(name = "anagraphicMB")
-public class AnagraphicManagedBean {
-
+@ViewScoped
+public class AnagraphicManagedBean implements Serializable {
+    Logger log = Logger.getLogger(AnagraphicManagedBean.class)
+        
+    @PostConstruct
+    public void init() {
+        anagraphics = new LazyAnagraphicDataModel(anagraphicService)
+    }
+    
     @ManagedProperty(value = "#{message}")
     MessageSourceBean message
     
@@ -25,10 +37,11 @@ public class AnagraphicManagedBean {
         anagraphic 
     }
     
-    List<Anagraphic> anagraphics
-    List<Anagraphic> getAnagraphics() {
-        anagraphics = anagraphicService.list()
-        return anagraphics
+    LazyDataModel<Anagraphic> anagraphics
+    List<Anagraphic> selectedAnagraphics
+    LazyDataModel<Anagraphic> getAnagraphics() {
+        anagraphics
+        
     }
       
     public void add() {
