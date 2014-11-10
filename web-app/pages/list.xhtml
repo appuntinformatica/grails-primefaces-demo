@@ -17,31 +17,17 @@
         </p:panelGrid>
     </h:form>
 
-    <p:dialog header="Create New Anagraphic" widgetVar="newAnagraphicDialog" resizable="false" id="newAnagraphicDlg" > 
-        <h:form id="anagraphicForm">
-            <p:panelGrid id="displayNewAnagraphic" columns="2" style="margin:0 auto;">
-                <h:outputText  value="#{message.i18n('anagraphic.firstName.label')}"/>
-                <p:inputText id="firstName" value="#{anagraphicMB.anagraphic.firstName}" autocomplete="off" />
-
-                <h:outputText value="#{message.i18n('anagraphic.surname.label')}"/>
-                <p:inputText id="surname" value="#{anagraphicMB.anagraphic.surname}" autocomplete="off" />
-
-                <f:facet name="footer">
-                    <p:commandButton id="add" value="#{message.i18n('default.add.button')}" action="#{anagraphicMB.add}" ajax="false"/>
-                    <p:commandButton id="reset" value="#{message.i18n('default.reset.button')}" action="#{anagraphicMB.reset}" ajax="false"/>
-                </f:facet>
-            </p:panelGrid>
-        </h:form>
-    </p:dialog>
     <h:form id="anagraphicsForm">
+
+    
         <p:growl id="messages" showDetail="true"/>
 
-        <p:dataTable id="anagraphicsDT" var="anagraphic" value="#{anagraphicMB.anagraphics}" selection="#{anagraphicMB.selectedAnagraphics}" rowKey="#{anagraphic.id}"
-                    rows="10" paginator="true" rowsPerPageTemplate="10,20,50" lazy="true"
+        <p:dataTable id="anagraphicsDT" var="anagraphic" value="#{anagraphicMB.anagraphics}" selection="#{anagraphicMB.anagraphic}" rowKey="#{anagraphic.id}"
+                    rows="10" paginator="true" rowsPerPageTemplate="10,20,50" lazy="true" selectionMode="single"
                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
 
-            <p:column selectionMode="multiple" width="5%" style="text-align: center;" />
-            
+            <p:ajax event="rowSelect" listener="#{anagraphicMB.onRowSelect}" update=":anagraphicsForm:anagraphicDetail" oncomplete="PF('formAnagraphicDialog').show()" />
+        
             <p:column headerText="ID" width="5%" style="text-align: center;">
                 <h:outputText value="#{anagraphic.id}"/>
             </p:column>
@@ -51,17 +37,33 @@
             <p:column headerText="${message.i18n('anagraphic.surname.label')}" sortBy="#{anagraphic.surname}" filterBy="#{anagraphic.surname}">
                 <h:outputText value="#{anagraphic.surname}"/>
             </p:column>
+            <p:column width="5%"    >
+                <p:commandButton  onclick="return confirm('Are you sure?')" update=":anagraphicsForm:anagraphicsDT" action="#{anagraphicMB.delete(anagraphic.id)}" icon="ui-icon-trash" />
+            </p:column>
+            
             <f:facet name="footer">
-                <p:commandButton value="New Anagraphic" oncomplete="PF('newAnagraphicDialog').show()" icon="ui-icon-star" title="Creates new Anagraphic"/>
-                <p:commandButton process="anagraphicsDT" update=":anagraphicsForm:anagraphicDetail" icon="ui-icon-search" value="View" oncomplete="PF('anagraphicDialog').show()" />
+                <p:commandButton value="New Anagraphic" oncomplete="PF('formAnagraphicDialog').show()" icon="ui-icon-star" title="Creates New Anagraphic">
+                    <f:setPropertyActionListener value="" target="#{anagraphicMB.anagraphic}" />
+                </p:commandButton>
             </f:facet>
         </p:dataTable>
-        <br/>
-        <p:dialog header="Selected Anagraphics" widgetVar="anagraphicDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" width="200">
+        
+        <p:dialog header="Create New Anagraphic" widgetVar="formAnagraphicDialog" resizable="false" id="formAnagraphicDlg" modal="true" >
             <p:outputPanel id="anagraphicDetail" style="text-align:center;">
-                <ui:repeat value="#{anagraphicMB.selectedAnagraphics}" var="anagraphic">
-                    <h:outputText value="#{anagraphic.id} - #{anagraphic.firstName} #{anagraphic.surname}" style="display:block"/>
-                </ui:repeat>
+                <h:form id="anagraphicForm">
+                    <p:panelGrid id="formAnagraphicDialog" columns="2" style="margin:0 auto;" >
+                        <h:outputText  value="#{message.i18n('anagraphic.firstName.label')}"/>
+                        <p:inputText id="firstName" value="#{anagraphicMB.anagraphic.firstName}" autocomplete="off" />
+
+                        <h:outputText value="#{message.i18n('anagraphic.surname.label')}"/>
+                        <p:inputText id="surname" value="#{anagraphicMB.anagraphic.surname}" autocomplete="off" />
+
+                        <f:facet name="footer">
+                            <p:commandButton id="save" value="#{message.i18n('default.save.button')}" action="#{anagraphicMB.save}" ajax="false" icon="ui-icon-disk"/>
+                            <p:commandButton id="reset" value="#{message.i18n('default.reset.button')}" action="#{anagraphicMB.reset}" ajax="false"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
             </p:outputPanel>
         </p:dialog>
     </h:form>

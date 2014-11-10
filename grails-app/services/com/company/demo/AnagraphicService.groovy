@@ -6,6 +6,10 @@ import org.springframework.validation.FieldError
 @Transactional
 class AnagraphicService {
 
+    Anagraphic get(Long id) {
+        Anagraphic.get(id)
+    }
+    
     List<Anagraphic> list() {
         Anagraphic.list()
     }

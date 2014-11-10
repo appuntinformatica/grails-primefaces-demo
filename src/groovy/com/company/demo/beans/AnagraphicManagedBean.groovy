@@ -5,12 +5,14 @@ import org.apache.log4j.Logger
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
 import com.company.demo.*
+import org.primefaces.event.SelectEvent;
 import grails.plugins.primefaces.GrailsService
 import grails.plugins.primefaces.MessageSourceBean
 import javax.faces.application.FacesMessage
 import javax.faces.bean.ManagedBean
 import javax.faces.bean.ManagedProperty
 import javax.faces.bean.ViewScoped
+import javax.faces.bean.SessionScoped
 import javax.faces.context.FacesContext
 import org.springframework.validation.FieldError
 
@@ -22,6 +24,7 @@ public class AnagraphicManagedBean implements Serializable {
     @PostConstruct
     public void init() {
         anagraphics = new LazyAnagraphicDataModel(anagraphicService)
+        anagraphic = new Anagraphic()
     }
     
     @ManagedProperty(value = "#{message}")
@@ -31,21 +34,10 @@ public class AnagraphicManagedBean implements Serializable {
     AnagraphicService anagraphicService
     
     Anagraphic anagraphic
-    Anagraphic getAnagraphic() {
-        if (!anagraphic)
-            anagraphic = new Anagraphic()
-        anagraphic 
-    }
-    
     LazyDataModel<Anagraphic> anagraphics
-    List<Anagraphic> selectedAnagraphics
-    LazyDataModel<Anagraphic> getAnagraphics() {
-        anagraphics
-        
-    }
-      
-    public void add() {
-        anagraphic.id = null
+
+    public void save() {
+        //anagraphic.id = null
         List<FieldError> errors = getAnagraphicService().save(anagraphic)
         if (errors == null) {
             addInfoMessage(message.i18n("com.company.demo.Anagraphic.created.message"))
@@ -78,5 +70,10 @@ public class AnagraphicManagedBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message)
     }
     
+      public void onRowSelect(SelectEvent event) {
+        Long id =((Anagraphic) event.getObject()).getId();
+        log.info("" + id);
+        anagraphic = anagraphicService.get(id)
+    }
 }
 
