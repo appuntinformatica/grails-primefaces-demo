@@ -10,20 +10,18 @@ class AnagraphicService {
         Anagraphic.get(id)
     }
     
-    List<Anagraphic> list() {
+    def list() {
         Anagraphic.list()
     }
-    List<Anagraphic> list(int max, int offset) {
+    def list(int max, int offset) {
         log.info "[list] max = ${max}, offset = ${offset}"
         Anagraphic.list(max: max, offset: offset)
     }
-    List<Anagraphic> list(int max, int offset, String sort, String order) {
+    def list(int max, int offset, String sort, String order) {
         log.info "[list] max = ${max}, offset = ${offset}, sort = ${sort}, order = ${order}"
         Anagraphic.list(max: max, offset: offset, sort: sort, order: order)
     }
     
-    
-
     def delete(Long id) {
         def anagraphic = Anagraphic.get(id)
         anagraphic.delete(flush: true)
@@ -35,6 +33,29 @@ class AnagraphicService {
             return null
         } else {
             anagraphic.errors.allErrors
+        }
+    }
+    
+    def filter(Map filters, int max, int offset) {
+        def c = Anagraphic.createCriteria()
+        c.list (max: max, offset: offset) {
+            and {
+                filters.each { k, v ->
+                    ilike(k, "%${v}%")
+                }
+            }
+        }
+    }
+    
+    def filter(Map filters, int max, int offset, String sort, String order) {
+        def c = Anagraphic.createCriteria()
+        c.list (max: max, offset: offset) {
+            and {
+                filters.each { k, v ->
+                    ilike(k, "%${v}%")
+                }
+            }
+            order(sort, order)
         }
     }
 }

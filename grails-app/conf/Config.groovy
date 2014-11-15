@@ -127,4 +127,4 @@ log4j = {
            'net.sf.ehcache.hibernate'
 }
 
-grails.plugins.primefaces.beans.packages = [ "com.company.demo.beans" ]
+grails.plugins.primefaces.beans.packages = [ "com.company.demo.beans", "com.company.demo2.beans"  ]

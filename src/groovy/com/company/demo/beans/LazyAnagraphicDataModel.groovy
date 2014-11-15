@@ -17,16 +17,21 @@ public class LazyAnagraphicDataModel extends LazyDataModel<Anagraphic> {
     
     @Override
     public List<Anagraphic> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) { 
-        log.info("first = " + first + ", pageSize = " + pageSize + ", sortField = " + sortField + ", sortOrder = " + sortOrder)
+        log.info("first = " + first + ", pageSize = " + pageSize + ", sortField = " + sortField + ", sortOrder = " + sortOrder + ", filters = " + filters)
         def anagraphics
         if (!sortField) {
-            anagraphics = anagraphicService.list(pageSize, first)
+            if (filters.size() == 0)
+                anagraphics = anagraphicService.list(pageSize, first)
+            else
+                anagraphics = anagraphicService.filter(filters, pageSize, first)
         } else {
             String order = sortOrder == SortOrder.ASCENDING ? "asc" : "desc"
-            anagraphics = anagraphicService.list(pageSize, first, sortField, order)
+            if (filters.size() == 0)
+                anagraphics = anagraphicService.list(pageSize, first, sortField, order)
+            else
+                anagraphics = anagraphicService.filter(filters, pageSize, first, sortField, order)
         }
-        
-        this.setRowCount(anagraphics.totalCount);
+        this.setRowCount(anagraphics.totalCount)
         return anagraphics.list
     }
 }
