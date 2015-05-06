@@ -1,10 +1,10 @@
-package com.company.demo.beans
+package com.company.demo2.beans
 
 import org.apache.log4j.Logger
 import javax.annotation.PostConstruct
 
-import com.company.demo.Anagraphic
-import com.company.demo.AnagraphicService
+import com.company.demo2.Test
+import com.company.demo2.TestService
 
 import grails.plugins.primefaces.GrailsService
 import grails.plugins.primefaces.MessageSourceBean
@@ -19,34 +19,34 @@ import org.primefaces.model.LazyDataModel
 
 import org.springframework.validation.FieldError
 
-@ManagedBean(name = "anagraphicMB")
+@ManagedBean(name = "testMB")
 @SessionScoped
-public class AnagraphicManagedBean implements Serializable {
-    Logger log = Logger.getLogger(AnagraphicManagedBean.class)
+class TestManagedBean implements Serializable {
+    Logger log = Logger.getLogger(TestManagedBean.class)
         
     @PostConstruct
     public void init() {
-        anagraphics = new LazyAnagraphicDataModel(anagraphicService)
+        tests = new TestLazyDataModel(testService)
     }
     
     @ManagedProperty(value = "#{message}")
     MessageSourceBean message
     
-    @GrailsService(name = "anagraphicService")
-    AnagraphicService anagraphicService
+    @GrailsService(name = "testService")
+    TestService testService
     
-    Anagraphic anagraphic
-    LazyDataModel<Anagraphic> anagraphics
+    Test test
+    LazyDataModel<Test> tests
 
     public void save() {
-        log.info(anagraphic)        
-        boolean updated = (anagraphic.id != null)
-        List<FieldError> errors = getAnagraphicService().save(anagraphic)
+        log.debug(test)        
+        boolean updated = (test.id != null)
+        List<FieldError> errors = getTestService().save(test)
         if (errors == null) {
             if (updated == true) {
-                message.infoPF("com.company.demo.Anagraphic.updated.message", null)
+                message.infoPF("pf.default.updated.message", null, "Test")
             } else {
-                message.infoPF("com.company.demo.Anagraphic.created.message", null)
+                message.infoPF("pf.default.created.message", null, "Test")
             }
             reset()
         } else {
@@ -57,19 +57,18 @@ public class AnagraphicManagedBean implements Serializable {
     }
     
     public void reset() {
-        log.info "reset"
-        anagraphic = new Anagraphic()
+        test = new Test()
     }
     
     public void delete(Long id) {
-        getAnagraphicService().delete(id)
-        message.infoPF("com.company.demo.Anagraphic.deleted.message", null)
+        getTestService().delete(id)
+        message.infoPF("pf.default.deleted.message", null, "Test")
     }
 
     public void onRowSelect(SelectEvent event) {
-        Long id =((Anagraphic) event.getObject()).getId()
+        Long id = ((Test) event.getObject()).getId()
         log.info("id = " + id)
-        anagraphic = anagraphicService.get(id)
+        test = getTestService().get(id)
     }
 
 }

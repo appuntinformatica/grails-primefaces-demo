@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions" >
+   
+<h:head>
+    <title>Test</title>
+</h:head>
+<h:body>
+    <h:form id="testsForm">
+        <p:growl id="messages" showDetail="true"/>
+
+        <p:dataTable id="testsDT" var="test" value="#{testMB.tests}" selection="#{testMB.test}" rowKey="#{test.id}"
+                    rows="10" paginator="true" rowsPerPageTemplate="10,20,50" lazy="true" selectionMode="single"
+                    currentPageReportTemplate="#{message.i18n('primefaces.datatable.currentPageReportTemplate.label', '{startRecord}', '{endRecord}', '{totalRecords}')}"
+                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+            <p:ajax event="rowSelect" listener="#{testMB.onRowSelect}" update=":testForm" oncomplete="PF('testDialog').show()" />
+        
+            <p:column headerText="ID" width="5%" style="text-align: center;">
+                <h:outputText value="#{test.id}"/>
+            </p:column>
+            <p:column headerText="#{message.i18n('test.description.label')}" sortBy="#{test.description}" filterBy="#{test.description}">
+                <h:outputText value="#{test.description}"/>
+            </p:column>
+            
+            <p:column width="5%">
+                <p:commandButton icon="ui-icon-trash" action="#{testMB.delete(test.id)}" update=":testsForm">
+                    <p:confirm header="#{message.i18n('default.delete.confirm.header')}" message="#{message.i18n('default.button.delete.confirm.message')}" icon="ui-icon-alert" />
+                </p:commandButton>
+            </p:column>
+            
+            <f:facet name="footer">
+                <p:commandButton value="#{message.i18n('default.new.label')}" actionListener="#{testMB.reset}" oncomplete="PF('testDialog').show()" icon="ui-icon-star" />
+            </f:facet>
+        </p:dataTable>
+        <p:confirmDialog global="true" closeOnEscape="true">
+            <p:commandButton value="#{message.i18n('default.yes.message')}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="#{message.i18n('default.no.message')}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+    
+    <h:form id="testForm">                
+        <p:dialog header="Test Form" widgetVar="testDialog" closable="false" resizable="false" modal="true" closeOnEscape="true" >
+            <h:panelGrid columns="1" cellpadding="5">
+                <h:outputLabel for="description" value="#{message.i18n('test.description.label')}" />
+                <p:inputText id="description" value="#{testMB.test.description}" label="description"/>
+
+                
+                <f:facet name="footer">
+                    <p:commandButton update=":testsForm:testsDT" value="#{message.i18n('default.save.button')}" action="#{testMB.save}" ajax="false" icon="ui-icon-disk" />
+                    <p:commandButton value="#{message.i18n('default.reset.button')}" action="#{testMB.reset}" ajax="false" icon="ui-icon-cancel" />
+                </f:facet>
+            </h:panelGrid>
+        </p:dialog>
+    </h:form>
+</h:body>
+</html>

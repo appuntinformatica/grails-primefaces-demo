@@ -88,7 +88,7 @@
                 
                 <f:facet name="footer">
                     <p:commandButton update=":anagraphicsForm:anagraphicsDT" value="#{message.i18n('default.save.button')}" action="#{anagraphicMB.save}" ajax="false" icon="ui-icon-disk" />
-                    <p:commandButton value="#{message.i18n('default.reset.button')}" action="#{anagraphicMB.reset}" ajax="false" icon="ui-icon-cancel" />
+                    <p:commandButton value="#{message.i18n('default.reset.button')}" actionListener="#{anagraphicMB.reset}" ajax="false" icon="ui-icon-cancel" />
                 </f:facet>
             </h:panelGrid>
         </p:dialog>
